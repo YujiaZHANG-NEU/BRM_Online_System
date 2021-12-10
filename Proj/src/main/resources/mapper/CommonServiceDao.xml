@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.brm.version1.dao.CommonServiceDao">
+
+    <resultMap type="com.brm.version1.entity.CommonService" id="CommonServiceMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="ctreateTime" column="Ctreate_time" jdbcType="TIMESTAMP"/>
+        <result property="customerName" column="Customer_Name" jdbcType="VARCHAR"/>
+        <result property="dueTime" column="Due_time" jdbcType="TIMESTAMP"/>
+        <result property="type" column="Type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CommonServiceMap">
+        select id,
+               Ctreate_time,
+               Customer_Name,
+               Due_time,
+               Type
+        from common_service
+        where id = #{id}
+    </select>
+
+    <select id="queryAll" resultMap="CommonServiceMap">
+        select id,
+               Ctreate_time,
+               Customer_Name,
+               Due_time,
+               Type
+        from common_service
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CommonServiceMap">
+        select
+        id, Ctreate_time, Customer_Name, Due_time, Type
+        from common_service
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="ctreateTime != null">
+                and Ctreate_time = #{ctreateTime}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                and Customer_Name = #{customerName}
+            </if>
+            <if test="dueTime != null">
+                and Due_time = #{dueTime}
+            </if>
+            <if test="type != null and type != ''">
+                and Type = #{type}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from common_service
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="ctreateTime != null">
+                and Ctreate_time = #{ctreateTime}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                and Customer_Name = #{customerName}
+            </if>
+            <if test="dueTime != null">
+                and Due_time = #{dueTime}
+            </if>
+            <if test="type != null and type != ''">
+                and Type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into common_service(Ctreate_time, Customer_Name, Due_time, Type)
+        values (#{ctreateTime}, #{customerName}, #{dueTime}, #{type})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into common_service(Ctreate_time, Customer_Name, Due_time, Type)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ctreateTime}, #{entity.customerName}, #{entity.dueTime}, #{entity.type})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into common_service(Ctreate_time, Customer_Name, Due_time, Type)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.ctreateTime}, #{entity.customerName}, #{entity.dueTime}, #{entity.type})
+        </foreach>
+        on duplicate key update
+        Ctreate_time = values(Ctreate_time),
+        Customer_Name = values(Customer_Name),
+        Due_time = values(Due_time),
+        Type = values(Type)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update common_service
+        <set>
+            <if test="ctreateTime != null">
+                Ctreate_time = #{ctreateTime},
+            </if>
+            <if test="customerName != null and customerName != ''">
+                Customer_Name = #{customerName},
+            </if>
+            <if test="dueTime != null">
+                Due_time = #{dueTime},
+            </if>
+            <if test="type != null and type != ''">
+                Type = #{type},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from common_service
+        where id = #{id}
+    </delete>
+
+</mapper>
+
